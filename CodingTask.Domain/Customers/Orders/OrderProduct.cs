@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodingTask.Domain.ForeignExchange;
+ 
 using CodingTask.Domain.Products;
 using CodingTask.Domain.SeedWork;
 using CodingTask.Domain.SharedKernel;
@@ -26,41 +26,30 @@ namespace CodingTask.Domain.Customers.Orders
         private OrderProduct(
             ProductPriceData productPrice,
             int quantity,
-            string currency,
-            List<ConversionRate> conversionRates)
+            string currency )
         {
             this.ProductId = productPrice.ProductId;
             this.Quantity = quantity;
 
-            this.CalculateValue(productPrice, currency, conversionRates);
+            this.CalculateValue(productPrice, currency );
         }
 
         internal static OrderProduct CreateForProduct(
-            ProductPriceData productPrice, int quantity, string currency,
-            List<ConversionRate> conversionRates)
+            ProductPriceData productPrice, int quantity, string currency )
         {
-            return new OrderProduct(productPrice, quantity, currency, conversionRates);
+            return new OrderProduct(productPrice, quantity, currency );
         }
 
-        internal void ChangeQuantity(ProductPriceData productPrice, int quantity, List<ConversionRate> conversionRates)
+        internal void ChangeQuantity(ProductPriceData productPrice, int quantity )
         {
             this.Quantity = quantity;
 
-            this.CalculateValue(productPrice, this.Value.Currency, conversionRates);
+            this.CalculateValue(productPrice, this.Value.Currency );
         }
 
-        private void CalculateValue(ProductPriceData productPrice, string currency, List<ConversionRate> conversionRates)
+        private void CalculateValue(ProductPriceData productPrice, string currency)
         {
-            this.Value = this.Quantity * productPrice.Price;
-            if (currency == "EUR")
-            {
-                this.ValueInEUR = this.Quantity * productPrice.Price;
-            }
-            else
-            {
-                var conversionRate = conversionRates.Single(x => x.SourceCurrency == currency && x.TargetCurrency == "EUR");
-                this.ValueInEUR = conversionRate.Convert(this.Value);
-            }
+           
         }
     }
 }

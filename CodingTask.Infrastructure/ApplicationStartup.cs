@@ -9,11 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Impl;
 using CodingTask.Application.Configuration;
-using CodingTask.Application.Configuration.Emails;
+
 using CodingTask.Infrastructure.Caching;
 using CodingTask.Infrastructure.Database;
 using CodingTask.Infrastructure.Domain;
-using CodingTask.Infrastructure.Logging;
+
 using CodingTask.Infrastructure.Processing;
 using CodingTask.Infrastructure.Processing.InternalCommands;
 using CodingTask.Infrastructure.Processing.Outbox;
@@ -29,26 +29,18 @@ namespace CodingTask.Infrastructure
             IServiceCollection services,
             string connectionString,
             ICacheStore cacheStore,
-            IEmailSender emailSender,
-            EmailsSettings emailsSettings,
+           
             ILogger logger,
             IExecutionContextAccessor executionContextAccessor,
             bool runQuartz = true)
         {
-            if (runQuartz)
-            {
-                StartQuartz(connectionString, emailsSettings, logger, executionContextAccessor);
-            }
-
+          
             services.AddSingleton(cacheStore);
 
             var serviceProvider = CreateAutofacServiceProvider(
                 services, 
                 connectionString, 
-                emailSender, 
-                emailsSettings,
-                logger,
-                executionContextAccessor);
+                     executionContextAccessor);
 
             return serviceProvider;
         }
@@ -56,28 +48,20 @@ namespace CodingTask.Infrastructure
         private static IServiceProvider CreateAutofacServiceProvider(
             IServiceCollection services,
             string connectionString,
-            IEmailSender emailSender,
-            EmailsSettings emailsSettings,
-            ILogger logger,
+           
+           
             IExecutionContextAccessor executionContextAccessor)
         {
             var container = new ContainerBuilder();
 
             container.Populate(services);
 
-            container.RegisterModule(new LoggingModule(logger));
+           
             container.RegisterModule(new DataAccessModule(connectionString));
             container.RegisterModule(new MediatorModule());
             container.RegisterModule(new DomainModule());
             
-            if (emailSender != null)
-            {
-                container.RegisterModule(new EmailModule(emailSender, emailsSettings));
-            }
-            else
-            {
-                container.RegisterModule(new EmailModule(emailsSettings));
-            }
+        
             
             container.RegisterModule(new ProcessingModule());
 
@@ -96,8 +80,7 @@ namespace CodingTask.Infrastructure
 
         private static void StartQuartz(
             string connectionString, 
-            EmailsSettings emailsSettings,
-            ILogger logger,
+          
             IExecutionContextAccessor executionContextAccessor)
         {
             var schedulerFactory = new StdSchedulerFactory();
@@ -105,11 +88,11 @@ namespace CodingTask.Infrastructure
 
             var container = new ContainerBuilder();
 
-            container.RegisterModule(new LoggingModule(logger));
+           
             container.RegisterModule(new QuartzModule());
             container.RegisterModule(new MediatorModule());
             container.RegisterModule(new DataAccessModule(connectionString));
-            container.RegisterModule(new EmailModule(emailsSettings));
+          
             container.RegisterModule(new ProcessingModule());
 
             container.RegisterInstance(executionContextAccessor);

@@ -13,7 +13,6 @@ using CodingTask.API.Configuration;
 using CodingTask.Application.Configuration.Validation;
 using CodingTask.API.SeedWork;
 using CodingTask.Application.Configuration;
-using CodingTask.Application.Configuration.Emails;
 using CodingTask.Domain.SeedWork;
 using CodingTask.Infrastructure;
 using CodingTask.Infrastructure.Caching;
@@ -66,15 +65,14 @@ namespace CodingTask.API
 
             var children = this._configuration.GetSection("Caching").GetChildren();
             var cachingConfiguration = children.ToDictionary(child => child.Key, child => TimeSpan.Parse(child.Value));
-            var emailsSettings = _configuration.GetSection("EmailsSettings").Get<EmailsSettings>();
+            
             var memoryCache = serviceProvider.GetService<IMemoryCache>();
             return ApplicationStartup.Initialize(
                 services, 
                 this._configuration[OrdersConnectionString],
                 new MemoryCacheStore(memoryCache, cachingConfiguration),
                 null,
-                emailsSettings,
-                _logger,
+             
                 executionContextAccessor);
         }
 

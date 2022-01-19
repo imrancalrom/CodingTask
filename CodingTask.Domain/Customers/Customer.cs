@@ -4,9 +4,8 @@ using System.Linq;
 using CodingTask.Domain.Customers.Orders;
 using CodingTask.Domain.Customers.Orders.Events;
 using CodingTask.Domain.Customers.Rules;
-using CodingTask.Domain.ForeignExchange; 
 using CodingTask.Domain.SeedWork;
-
+using CodingTask.Domain.Products;
 namespace CodingTask.Domain.Customers
 {
     public class Customer : Entity, IAggregateRoot
@@ -48,14 +47,14 @@ namespace CodingTask.Domain.Customers
         }
 
         public OrderId PlaceOrder(
-            List<OrderProductData> orderProductsData,
-                       string currency, 
-            List<ConversionRate> conversionRates)
+         List<OrderProductData> orderProductsData,
+         List<ProductPriceData> allProductPrices,
+         string currency )
         {
             CheckRule(new CustomerCannotOrderMoreThan2OrdersOnTheSameDayRule(_orders));
             CheckRule(new OrderMustHaveAtLeastOneProductRule(orderProductsData));
 
-            var order = Order.CreateNew(orderProductsData, null, currency, conversionRates);
+            var order = Order.CreateNew(orderProductsData, allProductPrices, currency );
 
             this._orders.Add(order);
 
@@ -64,7 +63,19 @@ namespace CodingTask.Domain.Customers
             return order.Id;
         }
 
-      
+        public void ChangeOrder(
+            OrderId orderId,
+            List<ProductPriceData> existingProducts,
+            List<OrderProductData> newOrderProductsData,             
+            string currency)
+        {
+            CheckRule(new OrderMustHaveAtLeastOneProductRule(newOrderProductsData));
+
+            var order = this._orders.Single(x => x.Id == orderId);
+            order.Change(existingProducts, newOrderProductsData,  currency);
+
+            this.AddDomainEvent(new OrderChangedEvent(orderId));
+        }
 
         public void RemoveOrder(OrderId orderId)
         {

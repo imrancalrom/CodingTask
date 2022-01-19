@@ -6,8 +6,7 @@ using CodingTask.Application.Configuration.Commands;
 using CodingTask.Application.Configuration.Data;
 using CodingTask.Domain.Customers;
 using CodingTask.Domain.Customers.Orders;
-using CodingTask.Domain.ForeignExchange;
-using CodingTask.Domain.Products;
+ using CodingTask.Domain.Products;
 
 namespace CodingTask.Application.Orders.PlaceCustomerOrder
 {
@@ -17,15 +16,15 @@ namespace CodingTask.Application.Orders.PlaceCustomerOrder
         
         private readonly ISqlConnectionFactory _sqlConnectionFactory;
         
-        private readonly IForeignExchange _foreignExchange;
+      
 
         public PlaceCustomerOrderCommandHandler(
             ICustomerRepository customerRepository,
-            IForeignExchange foreignExchange, 
+            
             ISqlConnectionFactory sqlConnectionFactory)
         {
             this._customerRepository = customerRepository;
-            this._foreignExchange = foreignExchange;
+            
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
@@ -36,7 +35,7 @@ namespace CodingTask.Application.Orders.PlaceCustomerOrder
             var allProductPrices =
                 await ProductPriceProvider.GetAllProductPrices(_sqlConnectionFactory.GetOpenConnection());
 
-            var conversionRates = this._foreignExchange.GetConversionRates();
+            
 
             var orderProductsData = command
                 .Products
@@ -46,8 +45,7 @@ namespace CodingTask.Application.Orders.PlaceCustomerOrder
             var orderId = customer.PlaceOrder(
                 orderProductsData,
                 allProductPrices,
-                command.Currency,
-                conversionRates);
+                command.Currency );
 
             return orderId.Value;
         }

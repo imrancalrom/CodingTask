@@ -7,7 +7,6 @@ using CodingTask.Application.Configuration.Data;
 using CodingTask.Application.Orders.PlaceCustomerOrder;
 using CodingTask.Domain.Customers;
 using CodingTask.Domain.Customers.Orders;
-using CodingTask.Domain.ForeignExchange;
 using CodingTask.Domain.Products;
 
 namespace CodingTask.Application.Orders.ChangeCustomerOrder
@@ -16,17 +15,17 @@ namespace CodingTask.Application.Orders.ChangeCustomerOrder
     {
         private readonly ICustomerRepository _customerRepository;
 
-        private readonly IForeignExchange _foreignExchange;
+      
 
         private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
         internal ChangeCustomerOrderCommandHandler(
             ICustomerRepository customerRepository,
-            IForeignExchange foreignExchange, 
+             
             ISqlConnectionFactory sqlConnectionFactory)
         {
             this._customerRepository = customerRepository;
-            _foreignExchange = foreignExchange;
+       
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
@@ -36,7 +35,7 @@ namespace CodingTask.Application.Orders.ChangeCustomerOrder
 
             var orderId = new OrderId(request.OrderId);
 
-            var conversionRates = this._foreignExchange.GetConversionRates();
+            
             var orderProducts = request
                     .Products
                     .Select(x => new OrderProductData(new ProductId(x.Id), x.Quantity))
@@ -49,7 +48,6 @@ namespace CodingTask.Application.Orders.ChangeCustomerOrder
                 orderId,
                 allProductPrices, 
                 orderProducts, 
-                conversionRates, 
                 request.Currency);
 
             return Unit.Value;

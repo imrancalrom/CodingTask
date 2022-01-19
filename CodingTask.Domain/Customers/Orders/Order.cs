@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodingTask.Domain.ForeignExchange;
 using CodingTask.Domain.Products;
 using CodingTask.Domain.SeedWork;
 using CodingTask.Domain.SharedKernel;
@@ -35,8 +34,7 @@ namespace CodingTask.Domain.Customers.Orders
         private Order(
             List<OrderProductData> orderProductsData,
             List<ProductPriceData> productPrices,
-            string currency, 
-            List<ConversionRate> conversionRates
+            string currency 
             )
         {
             this._orderDate = SystemClock.Now;
@@ -50,8 +48,7 @@ namespace CodingTask.Domain.Customers.Orders
                 var orderProduct = OrderProduct.CreateForProduct(
                     productPrice, 
                     orderProductData.Quantity,
-                    currency, 
-                    conversionRates);
+                    currency);
 
                 _orderProducts.Add(orderProduct);
             }
@@ -62,16 +59,16 @@ namespace CodingTask.Domain.Customers.Orders
 
         internal static Order CreateNew(List<OrderProductData> orderProductsData,
             List<ProductPriceData> allProductPrices,
-            string currency,
-            List<ConversionRate> conversionRates)
+            string currency
+             )
         {
-            return new Order(orderProductsData, allProductPrices, currency, conversionRates);
+            return new Order(orderProductsData, allProductPrices, currency );
         }
 
         internal void Change(
             List<ProductPriceData> allProductPrices,
             List<OrderProductData> orderProductsData, 
-            List<ConversionRate> conversionRates,
+            
             string currency)
         {
             foreach (var orderProductData in orderProductsData)
@@ -84,11 +81,11 @@ namespace CodingTask.Domain.Customers.Orders
                 {
                     var existingOrderProduct = this._orderProducts.Single(x => x.ProductId == existingProductOrder.ProductId);
                     
-                    existingOrderProduct.ChangeQuantity(product, orderProductData.Quantity, conversionRates);
+                    existingOrderProduct.ChangeQuantity(product, orderProductData.Quantity );
                 }
                 else
                 {
-                    var orderProduct = OrderProduct.CreateForProduct(product, orderProductData.Quantity, currency, conversionRates);
+                    var orderProduct = OrderProduct.CreateForProduct(product, orderProductData.Quantity, currency );
                     this._orderProducts.Add(orderProduct);
                 }
             }

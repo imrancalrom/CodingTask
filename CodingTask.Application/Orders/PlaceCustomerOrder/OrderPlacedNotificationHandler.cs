@@ -3,24 +3,21 @@ using System.Threading.Tasks;
 using Dapper;
 using MediatR;
 using CodingTask.Application.Configuration.Data;
-using CodingTask.Application.Configuration.Emails;
+ 
 using CodingTask.Domain.Customers.Orders;
 
 namespace CodingTask.Application.Orders.PlaceCustomerOrder
 {
     public class OrderPlacedNotificationHandler : INotificationHandler<OrderPlacedNotification>
     {
-        private readonly IEmailSender _emailSender;
-        private readonly EmailsSettings _emailsSettings;
+       
         private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
         public OrderPlacedNotificationHandler(
-            IEmailSender emailSender, 
-            EmailsSettings emailsSettings, 
+             
             ISqlConnectionFactory sqlConnectionFactory)
         {
-            _emailSender = emailSender;
-            _emailsSettings = emailsSettings;
+            
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
@@ -38,12 +35,7 @@ namespace CodingTask.Application.Orders.PlaceCustomerOrder
                     Id = request.CustomerId.Value
                 });
 
-            var emailMessage = new EmailMessage(
-                _emailsSettings.FromAddressEmail, 
-                customerEmail, 
-                OrderNotificationsService.GetOrderEmailConfirmationDescription(request.OrderId));
-            
-            await _emailSender.SendEmailAsync(emailMessage);
+             
         }
     }
 }
