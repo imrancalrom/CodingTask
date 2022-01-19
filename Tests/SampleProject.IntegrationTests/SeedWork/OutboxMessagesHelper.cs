@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Dapper;
 using MediatR;
 using Newtonsoft.Json;
-using CodingTask.Application.Payments;
+
 using CodingTask.Infrastructure.Processing.Outbox;
 
 namespace CodingTask.IntegrationTests.SeedWork
@@ -26,10 +26,6 @@ namespace CodingTask.IntegrationTests.SeedWork
             return messages.AsList();
         }
 
-        public static T Deserialize<T>(OutboxMessageDto message) where T : class, INotification
-        {
-            Type type = Assembly.GetAssembly(typeof(PaymentCreatedNotification)).GetType(message.Type);
-            return JsonConvert.DeserializeObject(message.Data, type) as T;
-        }
+     
     }
 }

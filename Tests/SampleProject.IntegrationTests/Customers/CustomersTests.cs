@@ -17,7 +17,7 @@ namespace CodingTask.IntegrationTests.Customers
         public async Task RegisterCustomerTest()
         {
             const string email = "newCustomer@mail.com";
-            const string name = "Sample Company";
+            const string name = "Validata Company";
             
             var customer = await CommandsExecutor.Execute(new RegisterCustomerCommand(email, name));
             var customerDetails = await QueriesExecutor.Execute(new GetCustomerDetailsQuery(customer.Id));
@@ -31,10 +31,6 @@ namespace CodingTask.IntegrationTests.Customers
 
             Assert.That(messagesList.Count, Is.EqualTo(1));
 
-            var customerRegisteredNotification =
-                OutboxMessagesHelper.Deserialize<CustomerRegisteredNotification>(messagesList[0]);
-
-            Assert.That(customerRegisteredNotification.CustomerId, Is.EqualTo(new CustomerId(customer.Id)));
         }
     }
 }

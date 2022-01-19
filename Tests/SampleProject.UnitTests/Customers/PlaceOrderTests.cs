@@ -4,7 +4,6 @@ using NUnit.Framework;
 using CodingTask.Domain.Customers.Orders;
 using CodingTask.Domain.Customers.Orders.Events;
 using CodingTask.Domain.Customers.Rules;
-using CodingTask.Domain.ForeignExchange;
 using CodingTask.Domain.Products;
 using CodingTask.Domain.SharedKernel;
 using CodingTask.UnitTests.SeedWork;
@@ -29,14 +28,13 @@ namespace CodingTask.UnitTests.Customers
             };
             
             const string currency = "EUR";
-            var conversionRates = GetConversionRates();
+          
             
             // Act
             customer.PlaceOrder(
                 orderProductsData, 
                 allProductPrices, 
-                currency, 
-                conversionRates);
+                currency);
 
             // Assert
             var orderPlaced = AssertPublishedDomainEvent<OrderPlacedEvent>(customer);
@@ -57,7 +55,7 @@ namespace CodingTask.UnitTests.Customers
             };
 
             const string currency = "EUR";
-            var conversionRates = GetConversionRates();
+          
 
             // Assert
             AssertBrokenRule<OrderMustHaveAtLeastOneProductRule>(() =>
@@ -66,8 +64,7 @@ namespace CodingTask.UnitTests.Customers
                 customer.PlaceOrder(
                     orderProductsData,
                     allProductPrices,
-                    currency,
-                    conversionRates);
+                    currency);
             });
         }
 
@@ -86,21 +83,19 @@ namespace CodingTask.UnitTests.Customers
             };
 
             const string currency = "EUR";
-            var conversionRates = GetConversionRates();
+           
 
             SystemClock.Set(new DateTime(2020, 1, 10, 11, 0, 0));
             customer.PlaceOrder(
                 orderProductsData,
                 allProductPrices,
-                currency,
-                conversionRates);
+                currency);
 
             SystemClock.Set(new DateTime(2020, 1, 10, 11, 30, 0));
             customer.PlaceOrder(
                 orderProductsData,
                 allProductPrices,
-                currency,
-                conversionRates);
+                currency);
 
             SystemClock.Set(new DateTime(2020, 1, 10, 12, 00, 0));
 
@@ -111,21 +106,11 @@ namespace CodingTask.UnitTests.Customers
                 customer.PlaceOrder(
                     orderProductsData,
                     allProductPrices,
-                    currency,
-                    conversionRates);
+                    currency);
             });
         }
 
-        private static List<ConversionRate> GetConversionRates()
-        {
-
-            var conversionRates = new List<ConversionRate>();
-
-            conversionRates.Add(new ConversionRate("USD", "EUR", (decimal)0.88));
-            conversionRates.Add(new ConversionRate("EUR", "USD", (decimal)1.13));
-
-            return conversionRates;
-        }
+     
     }
 
 
