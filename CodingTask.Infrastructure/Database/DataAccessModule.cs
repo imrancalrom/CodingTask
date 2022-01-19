@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using CodingTask.Application;
 using CodingTask.Application.Configuration.Data;
 using CodingTask.Domain.Customers.Orders;
-using CodingTask.Domain.Payments;
+
 using CodingTask.Domain.Products;
 using CodingTask.Domain.SeedWork;
 using CodingTask.Infrastructure.Domain;
 using CodingTask.Infrastructure.Domain.Customers;
-using CodingTask.Infrastructure.Domain.Payments;
+
 using CodingTask.Infrastructure.Domain.Products;
 using CodingTask.Infrastructure.SeedWork;
 
@@ -44,9 +44,7 @@ namespace CodingTask.Infrastructure.Database
                 .As<IProductRepository>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<PaymentRepository>()
-                .As<IPaymentRepository>()
-                .InstancePerLifetimeScope();
+         
 
             builder.RegisterType<StronglyTypedIdValueConverterSelector>()
                 .As<IValueConverterSelector>()

@@ -5,7 +5,7 @@ using CodingTask.Application;
 using CodingTask.Application.Configuration.Commands;
 using CodingTask.Application.Configuration.DomainEvents;
 using CodingTask.Application.Configuration.Processing;
-using CodingTask.Application.Payments;
+
 using CodingTask.Infrastructure.Logging;
 using CodingTask.Infrastructure.Processing.InternalCommands;
 
@@ -19,8 +19,7 @@ namespace CodingTask.Infrastructure.Processing
                 .As<IDomainEventsDispatcher>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterAssemblyTypes(typeof(PaymentCreatedNotification).GetTypeInfo().Assembly)
-                .AsClosedTypesOf(typeof(IDomainEventNotification<>)).InstancePerDependency();
+         
 
             builder.RegisterGenericDecorator(
                 typeof(DomainEventsDispatcherNotificationHandlerDecorator<>), 
